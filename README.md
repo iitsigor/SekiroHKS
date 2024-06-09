@@ -3,13 +3,14 @@ HKS is a script using the lua language. It is used as a means to proc havok beha
 This repo adds variables to the "env(" and "act(" values in order to provide more info to the end user as to what goes on in the script.
 
 ## Information
-
+PLAYER
 Unlike other fromsoft titles, Sekiro's player hks is split into 4 files.
 - c0000.hks - most of the code here uses env( and act(. Stores essential commands.
 - c0000_define.hks - stores defined values, as well as some other niche things
 - c0000_transition.hks - generally used for firing hks events during a set state (can be "Style", HKB (Havok Behavior), Speffect, or other)
 - c0000_cmsg.hks (Custom Manual Selector Generator) - used for assigning havok behavior to fired hks events
 
+NPC's
 - NPC's depend on c9997.hks
 
 ## Requirements
