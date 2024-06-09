@@ -3,7 +3,6 @@ HKS is a script using the lua language. It is used as a means to proc havok beha
 This repo adds variables to the "env(" and "act(" values in order to provide more info to the end user as to what goes on in the script.
 
 ## Information
-PLAYER
 Unlike other fromsoft titles, Sekiro's player hks is split into 4 files.
 - `c0000.hks` - most of the code here uses env( and act(. Stores essential commands which get used across other hks files as well.
 - `c0000_define.hks` - stores defined values, debug print functions, as well as a couple other things.
