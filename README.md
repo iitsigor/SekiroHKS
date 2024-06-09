@@ -15,7 +15,7 @@ NPC's
 
 ## Requirements
 
-- any form of c0000 files from this repo needs to include `c0000_define.hks` to work, as that is where the variables are stored.
+- any form of `c0000` files from this repo needs to include `c0000_define.hks` to work, as that is where the variables are stored.
 - in order to use any of the npc .hks files (e.g: `c7110.hks`), you need to include `c9997.hks` from this repo as well, as that is where the variables are stored.
 
 ## Credits:
