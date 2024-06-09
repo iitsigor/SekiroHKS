@@ -1,6 +1,6 @@
 # SekiroHKS
 HKS is a script using the lua language. It is used as a means to proc havok behavior and animations for both player and npc's.
-This repo adds variables to the "env(" and "act(" values in order to provide more info to the end user as to what goes on in the script.
+This repo adds variables to the `env(` and `act(` values in order to provide more info to the end user as to what goes on in the script.
 
 ## Information
 Unlike other fromsoft titles, Sekiro's player hks is split into 4 files.
