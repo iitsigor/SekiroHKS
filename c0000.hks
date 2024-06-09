@@ -1,0 +1,846 @@
+﻿function Initialize()
+    collectgarbage("setstepmul", 100)
+    g_isUpperAction = FALSE
+    g_wallJumpCount = 0
+    g_airSubAttackCount = 0
+    g_airSpecialAttackCount = 0
+    g_AddElectroCharge = FALSE
+    g_EndSubWeaponChange = FALSE
+    g_beforeMoveSpeedIndex = 0
+    g_beforeMoveDirection = 0
+    g_enableTransitSprint = FALSE
+    g_beforeFireLand = -1
+    g_beforeSubAttackType = 0
+    g_beforeSpAttackNum = 0
+    g_beforeItemAnmType = 0
+    g_enableSpAttaclkJump = TRUE
+    g_forceCrouch = FALSE
+    g_autoAimTime = 1
+    g_autoAimFlag = FALSE
+    g_behaviorValidateOrderByStyle = {}
+    g_addBehaviorActionValidateOrderByStyle = {}
+    g_addBehaviorReactionValidateOrderByStyle = {}
+    ValidateOrderTableInit()
+    
+end
+
+function FireEvent(state)
+    hkbFireEvent(state)
+    ResetRequest()
+    return
+    
+end
+
+function FireEventNoReset(state)
+    hkbFireEvent(state)
+    return
+    
+end
+
+function FireEvents(...)
+    local buff = {...}
+    for f4_local0 = 1, #buff, 1 do
+        FireEvent(buff[f4_local0])
+    end
+    return
+    
+
+end
+
+function IsNodeActive(...)
+    local buff = {...}
+    for f5_local0 = 1, #buff, 1 do
+        if hkbIsNodeActive(buff[f5_local0]) then
+            return TRUE
+        end
+    end
+    return FALSE
+    
+
+end
+
+function SetVariable(name, value)
+    act(SetHavokVariable, name, value)
+    
+end
+
+function SetMoveType()
+    if env(GetSpEffectID, 100130) == TRUE then
+        SetVariable("MoveType", ConvergeValue(1, hkbGetVariable("MoveType"), 5, 5))
+        SetVariable("StanceMoveType", 1)
+        return
+    elseif env(GetSpEffectID, 100140) == TRUE then
+        SetVariable("MoveType", ConvergeValue(1, hkbGetVariable("MoveType"), 5, 5))
+        SetVariable("StanceMoveType", 1)
+        return
+    elseif env(GetSpEffectID, 100150) == TRUE then
+        SetVariable("MoveType", ConvergeValue(1, hkbGetVariable("MoveType"), 5, 5))
+        SetVariable("StanceMoveType", 0)
+        return
+    elseif env(GetSpEffectID, 100160) == TRUE then
+        SetVariable("MoveType", ConvergeValue(1, hkbGetVariable("MoveType"), 5, 5))
+        SetVariable("StanceMoveType", 0)
+        return
+    else
+        SetVariable("MoveType", ConvergeValue(0, hkbGetVariable("MoveType"), 5, 5))
+        return
+    end
+    
+end
+
+function GetMoveSpeed(stick_level)
+    local speed = hkbGetVariable("MoveSpeedLevelReal")
+    local inc_val = 3
+    local dec_val = 3
+    if stick_level == 2 then
+        inc_val = 6
+    end
+    local ret = ConvergeValue(stick_level, speed, inc_val, dec_val)
+    return ret
+    
+end
+
+function GetRandomIndex(max, before_index)
+    local msg_array = {}
+    local ret = 0
+    for f9_local0 = 0, max, 1 do
+        if 0 <= before_index and before_index <= max and f9_local0 == before_index then
+        else
+            table.insert(msg_array, f9_local0)
+        end
+    end
+    if 0 < #msg_array then
+        local rand = math.random(0, #msg_array)
+        ret = msg_array[rand]
+    elseif is_expect_cur_index then
+        ret = 0
+    end
+    return ret
+    
+
+end
+
+function Update()
+    g_isUpperAction = FALSE
+    if env(HasReceivedAnyDamage) == TRUE and env(IsCOMPlayer) == FALSE then
+        act(AddSpEffect, SP_EFFECT_DEACTIVATE_HP_AUTO_CHARGE)
+    end
+    act(SwitchMotion, FALSE)
+    SetVariable("NightvisionMoveSpeedIndex", hkbGetVariable("MoveSpeedIndex") + 1)
+    act(LockonSystemUnableToTurnAngle, 0, 0)
+    SetMoveType()
+    g_FrameCount = g_FrameCount + 1
+    
+end
+
+function ModifiersLayer_onGenerate()
+    
+end
+
+function ResetRequest()
+    act(ResetInputQueue)
+    
+end
+
+function _LandReset(current_hkb_state)
+    g_wallJumpCount = 0
+    g_airSubAttackCount = 0
+    if current_hkb_state ~= HKB_STATE_GROUND_SPECIAL_ATTACK_JUMP_READY and current_hkb_state ~= HKB_STATE_SPRINT_SPECIAL_ATTACK_JUMP_READY and current_hkb_state ~= HKB_STATE_AIR_SPECIAL_ATTACK_LANDING_JUMP_READY and current_hkb_state ~= HKB_STATE_GROUND_SPECIAL_ATTACK_JUMP_READY_NO_RESOURCE and current_hkb_state ~= HKB_STATE_SPRINT_SPECIAL_ATTACK_JUMP_READY_NO_RESOURCE and current_hkb_state ~= HKB_STATE_AIR_SPECIAL_ATTACK_LANDING_JUMP_READY_NO_RESOURCE then
+        g_airSpecialAttackCount = 0
+    end
+    
+end
+
+function GetStyleType(current_hkb_state)
+    return g_paramHkbState[current_hkb_state][PARAM_HKB_STATE__STYLE_TYPE]
+    
+end
+
+function GetStateType(current_hkb_state)
+    return g_paramHkbState[current_hkb_state][PARAM_HKB_STATE__STATE_TYPE]
+    
+end
+
+function InitState()
+    act(SetThrowState, 0)
+    if g_autoAimFlag == TRUE then
+        _StopAutoAim()
+    end
+    if env(IsCrouchReleasePossible) == TRUE and env(IsSpEffectBehaviorRefID, SP_EF_REF_FORCE_CROUCH) == FALSE then
+        g_forceCrouch = FALSE
+    else
+        g_forceCrouch = TRUE
+    end
+    local loadInitPose = env(GetSaveState)
+    local returnType = env(GetSafePositionReturnState)
+    if returnType ~= SAFE_POS_RETURN_TYPE_NONE then
+        if returnType == SAFE_POS_RETURN_TYPE_STAND then
+            if env("特殊効果発動中か_Behavior参照ID_寿命延長を厳密に取得", SP_EF_REF_AGING) == TRUE then
+                FireEvent("W_AgingMapEnter")
+            else
+                FireEvent("W_GroundMapEnter")
+            end
+        elseif returnType == SAFE_POS_RETURN_TYPE_CROUCH then
+            FireEvent("W_CrouchMapEnter")
+        elseif returnType == SAFE_POS_RETURN_TYPE_SWIM then
+            FireEvent("W_SwimMapEnter")
+        elseif returnType == SAFE_POS_RETURN_TYPE_DIVE then
+            FireEvent("W_DiveMapEnter")
+        else
+            FireEvent("W_GroundFallReturn")
+        end
+    elseif loadInitPose ~= LOAD_INIT_POSE_NONE then
+        if loadInitPose == LOAD_INIT_POSE_STAND then
+            if env("特殊効果発動中か_Behavior参照ID_寿命延長を厳密に取得", SP_EF_REF_AGING) == TRUE then
+                FireEvent("W_AgingMapEnter")
+            else
+                FireEvent("W_GroundMapEnter")
+            end
+        elseif loadInitPose == LOAD_INIT_POSE_CROUCH then
+            FireEvent("W_CrouchMapEnter")
+        elseif loadInitPose == LOAD_INIT_POSE_SWIM then
+            FireEvent("W_SwimMapEnter")
+        elseif loadInitPose == LOAD_INIT_POSE_DIVE then
+            FireEvent("W_DiveMapEnter")
+        else
+            FireEvent("W_GroundMapEnter")
+        end
+    elseif env(IsCrouchReleasePossible) == FALSE or env(IsSpEffectBehaviorRefID, SP_EF_REF_FORCE_CROUCH) == TRUE then
+        FireEvent("W_CrouchMapEnter")
+    elseif env("特殊効果発動中か_Behavior参照ID_寿命延長を厳密に取得", SP_EF_REF_AGING) == TRUE then
+        FireEvent("W_AgingMapEnter")
+    elseif env(IsSpEffectBehaviorRefID, SP_EF_REF_REDO_BELL_RETURN) == TRUE then
+        FireEvent("W_Event250701")
+    else
+        FireEvent("W_GroundMapEnter")
+    end
+    
+end
+
+function UpdateState(current_hkb_state)
+    Control(current_hkb_state)
+    Validate(current_hkb_state)
+    FireStateEndEvent(current_hkb_state)
+    
+end
+
+function UpdateAddState(current_hkb_add_state)
+    if env(IsAnimEnd, 0) == TRUE then
+        if current_hkb_add_state == HKB_STATE_ADD_SUB_WEAPON_CHANGE then
+            g_EndSubWeaponChange = TRUE
+            SetVariable("AddSubWeaponChangeBlend", 0)
+        elseif current_hkb_add_state == HKB_STATE_ADD_ADD_BLEND_SPEAK then
+            SetVariable("AddBlendSpeakIndex", GetRandomIndex(2, hkbGetVariable("AddBlendSpeakIndex")))
+        end
+    end
+    
+end
+
+function Control(current_hkb_state)
+    local currentStyle = g_paramHkbState[current_hkb_state][PARAM_HKB_STATE__STYLE_TYPE]
+    local currentState = g_paramHkbState[current_hkb_state][PARAM_HKB_STATE__STATE_TYPE]
+    g_AddElectroCharge = FALSE
+    if env(IsCrouchReleasePossible) == TRUE and env(IsSpEffectBehaviorRefID, SP_EF_REF_FORCE_CROUCH) == FALSE then
+        g_forceCrouch = FALSE
+    else
+        g_forceCrouch = TRUE
+    end
+    if g_beforeFireLand >= 0 then
+        if g_beforeFireLand >= 3 then
+            g_beforeFireLand = -1
+        else
+            g_beforeFireLand = g_beforeFireLand + 1
+        end
+    end
+    if currentState == STATE_TYPE_ACTION_THROW_ATK or currentState == STATE_TYPE_ACTION_THROW_ATK_KILL then
+        if env(IsThrowPosRealign) == FALSE then
+            SetVariable("CurrentThrowAnimId", hkbGetVariable("Selector_ThrowAnimId"))
+            if false then
+            end
+        end
+    else
+        SetVariable("CurrentThrowAnimId", -1)
+    end
+    local event_id = env(GetCommandIDFromEvent, 1)
+    if event_id == 710200 or event_id == 710201 or event_id == 710203 or event_id == 710200 or event_id == 710201 or event_id == 710203 or event_id == 710204 or event_id == 710205 or event_id == 710206 or event_id == 710207 then
+        act(RequestThrowAnimInterrupt)
+        FireEvent("W_Event" .. event_id)
+        return TRUE
+    end
+    local enableFallMove = TRUE
+    if current_hkb_state == HKB_STATE_STAND_IDLE or current_hkb_state == HKB_STATE_STAND_RUN_STOP or current_hkb_state == HKB_STATE_STAND_WALK_STOP or current_hkb_state == HKB_STATE_CROUCH_IDLE or current_hkb_state == HKB_STATE_DEFLECT_GUARD_IDLE or current_hkb_state == HKB_STATE_AGING_IDLE then
+        act(LockonSystemUnableToTurnAngle, 60, 60)
+    end
+    if current_hkb_state == HKB_STATE_STAND_IDLE or current_hkb_state == HKB_STATE_STAND_RUN_STOP or current_hkb_state == HKB_STATE_STAND_WALK_STOP or current_hkb_state == HKB_STATE_CROUCH_IDLE or current_hkb_state == HKB_STATE_DEFLECT_GUARD_IDLE or current_hkb_state == HKB_STATE_AGING_IDLE then
+        act(LockonSystemUnableToTurnAngle, 60, 60)
+    end
+    if (current_hkb_state == HKB_STATE_GROUND_JUMP_READY or current_hkb_state == HKB_STATE_SWAMP_JUMP_READY) and hkbGetVariable("Selector_GroundJumpType") ~= SELECTOR_GROUND_JUMP_TYPE_VERTICAL then
+        act(LockonFixedAngleCancel)
+    end
+    if g_enableTransitSprint == TRUE then
+        if current_hkb_state ~= HKB_STATE_GROUND_STEP then
+            g_enableTransitSprint = FALSE
+        elseif env(ActionDuration, ACTION_ARM_SP_MOVE) <= 0 and env(IsSpEffectBehaviorRefID, SP_EF_REF_TAE_INPUT_CHECK_SPRINT) == TRUE then
+            g_enableTransitSprint = FALSE
+        end
+    end
+    if currentState == STATE_TYPE_STANDBY then
+        if env(IsLanding) == TRUE then
+            act(SwitchMotion, TRUE)
+            if g_isUpperAction == FALSE then
+                act(Wait)
+            end
+            _SpeedUpdate(current_hkb_state)
+        else
+            act(Wait)
+        end
+        if g_autoAimFlag == TRUE then
+            _StopAutoAim()
+        end
+    elseif currentState == STATE_TYPE_LOWER then
+        g_isUpperAction = TRUE
+        act(SwitchMotion, TRUE)
+        _SpeedUpdate(current_hkb_state)
+    elseif currentState == STATE_TYPE_UPPER_STANDBY then
+        act(SwitchMotion, TRUE)
+        act(Wait)
+        _SpeedUpdate(current_hkb_state)
+        if g_autoAimFlag == TRUE then
+            _StopAutoAim()
+        end
+    elseif currentState == STATE_TYPE_STANDBY_GUARD or currentState == STATE_TYPE_STANDBY_SUB_GUARD then
+        act(AddSpEffect, SP_EFFECT_STYLE_DEFLECT_GUARD)
+        act(SwitchMotion, TRUE)
+        act(Wait)
+        _SpeedUpdate(current_hkb_state)
+        if g_autoAimFlag == TRUE then
+            _StopAutoAim()
+        end
+    elseif currentState == STATE_TYPE_STANDBY_ATK or currentState == STATE_TYPE_STANDBY_ATK_HOLD then
+        act(SwitchMotion, TRUE)
+        act(Wait)
+        _SpeedUpdate(current_hkb_state)
+    elseif currentState == STATE_TYPE_ACTION_ATK or currentState == STATE_TYPE_ACTION_THROW_ATK or currentState == STATE_TYPE_ACTION_THROW_ATK_KILL or currentState == STATE_TYPE_ACTION_ATK_HOLD or currentState == STATE_TYPE_UPPER_ACTION_ATK then
+        if _IsNpcWeapon() ~= TRUE then
+            act(SetAIAttackState, 1)
+        else
+            act(SetAIAttackState, hkbGetVariable("NTCAnimId_NpcSpAttack"))
+        end
+        if g_autoAimFlag == TRUE and env(IsMoveCancelPossible) == TRUE then
+            _StopAutoAim()
+        end
+    elseif currentState == STATE_TYPE_ACTION_GUARD or currentState == STATE_TYPE_ACTION_SUB_GUARD then
+        act(AddSpEffect, SP_EFFECT_STYLE_DEFLECT_GUARD)
+        if g_autoAimFlag == TRUE and env(IsMoveCancelPossible) == TRUE then
+            _StopAutoAim()
+        end
+    elseif currentState == STATE_TYPE_ACTION_ITEM_USE or currentState == STATE_TYPE_UPPER_ACTION_ITEM_USE then
+        if env(IsSpEffectBehaviorRefID, SP_EF_REF_ACTIVE_TELESCOPE) == FALSE and env(IsMoveCancelPossible) == FALSE then
+            act(SetIsItemAnimationPlaying)
+        end
+    elseif currentState == STATE_TYPE_UPPER_ACTION then
+    elseif currentState == STATE_TYPE_ACTION then
+    elseif currentState == STATE_TYPE_REACTION or currentState == STATE_TYPE_REACTION_ATK or currentState == STATE_TYPE_REACTION_ATK_HOLD or currentState == STATE_TYPE_REACTION_THROW_DEF or currentState == STATE_TYPE_REACTION_THROW_ESCAPE then
+        if currentState == STATE_TYPE_REACTION_ATK then
+            if _IsNpcWeapon() ~= TRUE then
+                act(SetAIAttackState, 1)
+            else
+                act(SetAIAttackState, hkbGetVariable("NTCAnimId_NpcSpAttack"))
+            end
+        end
+        if (currentStyle == STYLE_TYPE_STAND or currentStyle == STYLE_TYPE_CROUCH) and env(IsSpEffectBehaviorRefID, SP_EF_REF_TAE_CAMO_STANDBY_STATE) == TRUE then
+            act(SwitchMotion, TRUE)
+            _SpeedUpdate(current_hkb_state)
+        end
+        if g_autoAimFlag == TRUE and env(IsMoveCancelPossible) == TRUE then
+            _StopAutoAim()
+        end
+        if currentState == STATE_TYPE_REACTION_THROW_DEF then
+            if env(IsSpEffectBehaviorRefID, SP_EF_REF_TAE_SET_PRONE_DIR_FACE_DOWN_THROW_DEF) == TRUE then
+                SetVariable("Selector_ProneDirection", SELECTOR_PRONE_DIR_FACE_DOWN)
+            else
+                SetVariable("Selector_ProneDirection", SELECTOR_PRONE_DIR_FACE_UP)
+            end
+        end
+    elseif currentState == STATE_TYPE_REACTION_MAP_ENTER then
+    elseif currentState == STATE_TYPE_REACTION_DEATH or currentState == STATE_TYPE_REACTION_DEATH_START or currentState == STATE_TYPE_REACTION_DEATH_LOOP or currentState == STATE_TYPE_REACTION_DEATH_REVIVAL_STAY_LOOP or currentState == STATE_TYPE_REACTION_THROW_DEATH_START or currentState == STATE_TYPE_REACTION_THROW_DEATH_LOOP or currentState == STATE_TYPE_REACTION_THROW_DEATH_REVIVAL_STAY_LOOP then
+        act(SuctionDisabled)
+        if currentState == STATE_TYPE_REACTION_THROW_DEATH_START then
+            if env(IsSpEffectBehaviorRefID, SP_EF_REF_TAE_SET_PRONE_DIR_FACE_DOWN_THROW_DEF) == TRUE then
+                SetVariable("Selector_FallDmgDir", SELECTOR_FALL_DMG_DIR_B)
+                SetVariable("IndexDeath", DEATH_TYPE_COMMON_BACK)
+                SetVariable("Selector_ProneDirection", SELECTOR_PRONE_DIR_FACE_DOWN)
+            else
+                SetVariable("Selector_FallDmgDir", SELECTOR_FALL_DMG_DIR_F)
+                SetVariable("IndexDeath", DEATH_TYPE_COMMON)
+                SetVariable("Selector_ProneDirection", SELECTOR_PRONE_DIR_FACE_UP)
+            end
+        end
+    elseif currentState == STATE_TYPE_REACTION_GUARD or currentState == STATE_TYPE_REACTION_SUB_GUARD then
+        act(AddSpEffect, SP_EFFECT_STYLE_DEFLECT_GUARD)
+        if g_autoAimFlag == TRUE and env(IsMoveCancelPossible) == TRUE then
+            _StopAutoAim()
+        end
+    elseif currentState == STATE_TYPE_EVENT then
+        if env(IsAnimEnd, 1) == FALSE then
+            act(SetIsEventAnim)
+        end
+        act(SuctionDisabled)
+        if g_autoAimFlag == TRUE then
+            _StopAutoAim()
+        end
+        if current_hkb_state == HKB_STATE_STATUE_INITIALIZE then
+            act(LockonFixedAngleCancel)
+        end
+    elseif currentState == STATE_TYPE_EVENT_ENABLE_ACTION_BUTTON then
+        if env(IsAnimEnd, 1) == FALSE and current_hkb_state ~= HKB_STATE_EVENT390002 and current_hkb_state ~= HKB_STATE_EVENT711010 then
+            act(SetIsEventAnim)
+        end
+        act(SetIsEventActionPossible)
+        act(ActionButtonExecutable, ACTION_BUTTON_EXEC_TYPE_TALK_SKIP)
+        if current_hkb_state == HKB_STATE_EVENT390002 or current_hkb_state == HKB_STATE_EVENT711010 then
+            act(ActionButtonExecutable, ACTION_BUTTON_EXEC_TYPE_BASE)
+        end
+        act(SuctionDisabled)
+        if g_autoAimFlag == TRUE then
+            _StopAutoAim()
+        end
+        if current_hkb_state == HKB_STATE_STATUE_ATTACH_START then
+            act(LockonFixedAngleCancel)
+        end
+    elseif currentState == STATE_TYPE_EVENT_NPC_TALK_LOOP or currentState == STATE_TYPE_EVENT_NPC_TALK_REACTION or currentState == STATE_TYPE_EVENT_NPC_TALK_END or currentState == STATE_TYPE_EVENT_EAVESDROP_LOOP or currentState == STATE_TYPE_EVENT_EAVESDROP_END then
+        if env(IsAnimEnd, 1) == FALSE then
+            act(SetIsEventAnim)
+        end
+        act(SetIsEventActionPossible)
+        act(ActionButtonExecutable, ACTION_BUTTON_EXEC_TYPE_TALK_SKIP)
+        act(SuctionDisabled)
+        if current_hkb_state == HKB_STATE_EVENT711300 then
+            if env(IsSpEffectBehaviorRefID, SP_EF_REF_TAE_CAMO_EVENT_STANDBY_STATE) == FALSE then
+                act(SetTalkAnimState, EZ_STATE_REF_SND_711300)
+            end
+        elseif currentState == STATE_TYPE_EVENT_NPC_TALK_LOOP or currentState == STATE_TYPE_EVENT_NPC_TALK_REACTION or currentState == STATE_TYPE_EVENT_NPC_TALK_END then
+            if current_hkb_state == HKB_STATE_EVENT711200 or current_hkb_state == HKB_STATE_EVENT711201 or current_hkb_state == HKB_STATE_EVENT711202 then
+                act(SetTalkAnimState, EZ_STATE_REF_SND_NPC_TALK_ENGRAVER)
+            elseif current_hkb_state == HKB_STATE_EVENT711210 or current_hkb_state == HKB_STATE_EVENT711211 or current_hkb_state == HKB_STATE_EVENT711212 then
+                act(SetTalkAnimState, EZ_STATE_REF_SND_NPC_TALK_ENGRAVER_DUMMY)
+            elseif current_hkb_state == HKB_STATE_EVENT711333 then
+                act(SetTalkAnimState, EZ_STATE_REF_SND_NPC_TALK_711333)
+            else
+                act(SetTalkAnimState, EZ_STATE_REF_SND_NPC_TALK_LOOP)
+            end
+        elseif currentState == STATE_TYPE_EVENT_EAVESDROP_LOOP or currentState == STATE_TYPE_EVENT_EAVESDROP_END then
+            act(SetTalkAnimState, EZ_STATE_REF_SND_EAVESDROP_LOOP)
+        end
+        if currentState == STATE_TYPE_EVENT_NPC_TALK_LOOP then
+            act(LockonFixedAngleCancel)
+        end
+    end
+    if currentStyle == STYLE_TYPE_STAND then
+        _LandReset(current_hkb_state)
+        if (current_hkb_state == HKB_STATE_STAND_STEP_FROM_DAMAGE or current_hkb_state == HKB_STATE_STAND_STEP_FROM_DOWN) and env(ActionDuration, ACTION_ARM_USE_ITEM) > 0 and env(IsSpEffectBehaviorRefID, SP_EF_REF_TAE_ACCEPT_ITEM_USE_PRIORITIZE) == TRUE then
+            act(AddSpEffect, SP_EF_ITEM_USE_PRIORITIZE)
+        end
+        if current_hkb_state == HKB_STATE_SWIM_TO_STAND_MOVE then
+            act(LockonFixedAngleCancel)
+        end
+        if currentState == STATE_TYPE_STANDBY or env(IsSpEffectBehaviorRefID, SP_EF_REF_TAE_CAMO_STANDBY_STATE) == TRUE or env(IsMoveCancelPossible) == TRUE then
+            if env(IsSpEffectBehaviorRefID, SP_EF_REF_DISABLE_USE_ITEM_REQUEST) == FALSE and env(IsSpEffectBehaviorRefID, SP_EF_REF_DISABLE_ALL_INPUT) == FALSE and env(IsSpEffectBehaviorRefID, SP_EF_REF_TAE_DISABLE_MAIN_MENU) == FALSE then
+                act(SetIsEquipmentChangeableFromMenu)
+            end
+            act(SetIsEventActionPossible)
+            act(ActionButtonExecutable, ACTION_BUTTON_EXEC_TYPE_BASE)
+            act(ActionButtonExecutable, ACTION_BUTTON_EXEC_TYPE_ITEM_PICK)
+            act(ActionButtonExecutable, ACTION_BUTTON_EXEC_TYPE_EAVESDROP)
+        elseif env(IsSpEffectBehaviorRefID, SP_EF_REF_ACTIVE_TELESCOPE) == TRUE and env(IsSpEffectBehaviorRefID, SP_EF_REF_DISABLE_USE_ITEM_REQUEST) == FALSE and env(IsSpEffectBehaviorRefID, SP_EF_REF_DISABLE_ALL_INPUT) == FALSE and env(IsSpEffectBehaviorRefID, SP_EF_REF_TAE_DISABLE_MAIN_MENU) == FALSE then
+            act(SetIsEquipmentChangeableFromMenu)
+        end
+        g_doneFallThrowTgtUpdate = FALSE
+        if current_hkb_state == HKB_STATE_STAND_MOVE_START_FROM_SPRINT and env(IsSpEffectBehaviorRefID, SP_EF_REF_TAE_RELEASE_LOCKON_ANGLE_LOCK) == TRUE then
+            act(LockonFixedAngleCancel)
+        end
+        if GetWireMoveStartIndex(current_hkb_state) == WIRE_MOVE_START_INDEX_UPSLOPE then
+            act(SetMovePrecalculationAniID, MOVE_DISTANCE_PRE_CALCULATE_TYPE_GROUND_WIRE_MOVE_START, MOVE_DISTANCE_PRE_CALCULATE_ANIM_ID_GROUND_WIRE_MOVE_START_UPPER_SLOPE)
+        elseif GetWireMoveStartIndex(current_hkb_state) == WIRE_MOVE_START_INDEX_VERTICAL then
+            act(SetMovePrecalculationAniID, MOVE_DISTANCE_PRE_CALCULATE_TYPE_GROUND_WIRE_MOVE_START, MOVE_DISTANCE_PRE_CALCULATE_ANIM_ID_GROUND_WIRE_MOVE_START_UP)
+        else
+            act(SetMovePrecalculationAniID, MOVE_DISTANCE_PRE_CALCULATE_TYPE_GROUND_WIRE_MOVE_START, MOVE_DISTANCE_PRE_CALCULATE_ANIM_ID_GROUND_WIRE_MOVE_START_VERTICAL)
+        end
+        if env(IsSpEffectBehaviorRefID, SP_EF_REF_IN_WATERSIDE_AREA) == TRUE then
+            act(SetThrowPossibilityState_Attacker, THROWABLE_STATE_ATK_COMMON_IMPOSSIBLE)
+            act(SetThrowPossibilityState_Defender, THROWABLE_STATE_DEF_COMMON_IMPOSSIBLE)
+        else
+            act(SetThrowPossibilityState_Attacker, THROWABLE_STATE_ATK_PC_STAND)
+            act(SetThrowPossibilityState_Defender, THROWABLE_STATE_DEF_PC_GROUND)
+        end
+    elseif currentStyle == STYLE_TYPE_CROUCH then
+        _LandReset(current_hkb_state)
+        act(AddSpEffect, SP_EFFECT_CROUCHING)
+        if GetWireMoveStartIndex(current_hkb_state) == WIRE_MOVE_START_INDEX_UPSLOPE then
+            act(SetMovePrecalculationAniID, MOVE_DISTANCE_PRE_CALCULATE_TYPE_GROUND_WIRE_MOVE_START, MOVE_DISTANCE_PRE_CALCULATE_ANIM_ID_GROUND_WIRE_MOVE_START_UPPER_SLOPE)
+        elseif GetWireMoveStartIndex(current_hkb_state) == WIRE_MOVE_START_INDEX_VERTICAL then
+            act(SetMovePrecalculationAniID, MOVE_DISTANCE_PRE_CALCULATE_TYPE_GROUND_WIRE_MOVE_START, MOVE_DISTANCE_PRE_CALCULATE_ANIM_ID_GROUND_WIRE_MOVE_START_UP)
+        else
+            act(SetMovePrecalculationAniID, MOVE_DISTANCE_PRE_CALCULATE_TYPE_GROUND_WIRE_MOVE_START, MOVE_DISTANCE_PRE_CALCULATE_ANIM_ID_GROUND_WIRE_MOVE_START_VERTICAL)
+        end
+        if currentState == STATE_TYPE_STANDBY or env(IsSpEffectBehaviorRefID, SP_EF_REF_TAE_CAMO_STANDBY_STATE) == TRUE or env(IsMoveCancelPossible) == TRUE then
+            if env(IsSpEffectBehaviorRefID, SP_EF_REF_DISABLE_USE_ITEM_REQUEST) == FALSE and env(IsSpEffectBehaviorRefID, SP_EF_REF_DISABLE_ALL_INPUT) == FALSE and env(IsSpEffectBehaviorRefID, SP_EF_REF_TAE_DISABLE_MAIN_MENU) == FALSE then
+                act(SetIsEquipmentChangeableFromMenu)
+            end
+            act(SetIsEventActionPossible)
+            act(ActionButtonExecutable, ACTION_BUTTON_EXEC_TYPE_BASE)
+            act(ActionButtonExecutable, ACTION_BUTTON_EXEC_TYPE_ITEM_PICK)
+            act(ActionButtonExecutable, ACTION_BUTTON_EXEC_TYPE_EAVESDROP)
+        elseif env(IsSpEffectBehaviorRefID, SP_EF_REF_ACTIVE_TELESCOPE) == TRUE and env(IsSpEffectBehaviorRefID, SP_EF_REF_DISABLE_USE_ITEM_REQUEST) == FALSE and env(IsSpEffectBehaviorRefID, SP_EF_REF_DISABLE_ALL_INPUT) == FALSE and env(IsSpEffectBehaviorRefID, SP_EF_REF_TAE_DISABLE_MAIN_MENU) == FALSE then
+            act(SetIsEquipmentChangeableFromMenu)
+        end
+        if g_forceCrouch == TRUE then
+            act(SetThrowPossibilityState_Attacker, THROWABLE_STATE_ATK_COMMON_IMPOSSIBLE)
+            act(SetThrowPossibilityState_Defender, THROWABLE_STATE_DEF_COMMON_IMPOSSIBLE)
+        else
+            act(SetThrowPossibilityState_Attacker, THROWABLE_STATE_ATK_PC_STAND)
+            act(SetThrowPossibilityState_Defender, THROWABLE_STATE_DEF_PC_GROUND)
+        end
+    elseif currentStyle == STYLE_TYPE_GROUND_GUARD then
+        _LandReset(current_hkb_state)
+        act(AddSpEffect, SP_EFFECT_STYLE_DEFLECT_GUARD)
+        if GetWireMoveStartIndex(current_hkb_state) == WIRE_MOVE_START_INDEX_UPSLOPE then
+            act(SetMovePrecalculationAniID, MOVE_DISTANCE_PRE_CALCULATE_TYPE_GROUND_WIRE_MOVE_START, MOVE_DISTANCE_PRE_CALCULATE_ANIM_ID_GROUND_WIRE_MOVE_START_UPPER_SLOPE)
+        elseif GetWireMoveStartIndex(current_hkb_state) == WIRE_MOVE_START_INDEX_VERTICAL then
+            act(SetMovePrecalculationAniID, MOVE_DISTANCE_PRE_CALCULATE_TYPE_GROUND_WIRE_MOVE_START, MOVE_DISTANCE_PRE_CALCULATE_ANIM_ID_GROUND_WIRE_MOVE_START_UP)
+        else
+            act(SetMovePrecalculationAniID, MOVE_DISTANCE_PRE_CALCULATE_TYPE_GROUND_WIRE_MOVE_START, MOVE_DISTANCE_PRE_CALCULATE_ANIM_ID_GROUND_WIRE_MOVE_START_VERTICAL)
+        end
+        act(SetThrowPossibilityState_Attacker, THROWABLE_STATE_ATK_PC_STAND)
+        act(SetThrowPossibilityState_Defender, THROWABLE_STATE_DEF_PC_GROUND)
+    elseif currentStyle == STYLE_TYPE_COVER then
+        _LandReset(current_hkb_state)
+        local edgeType = env(GetDockingEdgeRequest)
+        if edgeType == COVER_EDGE_TYPE_PEAK_MOVE_DISABLE_LOOK or edgeType == COVER_EDGE_TYPE_PEAK_MOVE_FREE_LOOK or edgeType == COVER_EDGE_TYPE_PEAK_MOVE_LEFT_LOOK_ONLY or edgeType == COVER_EDGE_TYPE_PEAK_MOVE_RIGHT_LOOK_ONLY then
+            SetVariable("Selector_Environment", SELECTOR_COVER_ENVIRONMENT_PEAK)
+        else
+            SetVariable("Selector_Environment", SELECTOR_COVER_ENVIRONMENT_NOMAL)
+        end
+        if currentState == STATE_TYPE_STANDBY or current_hkb_state == HKB_STATE_COVER_ACTION_END or env(IsSpEffectBehaviorRefID, SP_EF_REF_TAE_CAMO_STANDBY_STATE) == TRUE or env(IsMoveCancelPossible) == TRUE then
+            if env(IsSpEffectBehaviorRefID, SP_EF_REF_DISABLE_USE_ITEM_REQUEST) == FALSE and env(IsSpEffectBehaviorRefID, SP_EF_REF_DISABLE_ALL_INPUT) == FALSE and env(IsSpEffectBehaviorRefID, SP_EF_REF_TAE_DISABLE_MAIN_MENU) == FALSE then
+                act(SetIsEquipmentChangeableFromMenu)
+            end
+            act(SetIsEventActionPossible)
+            act(ActionButtonExecutable, ACTION_BUTTON_EXEC_TYPE_ITEM_PICK)
+            act(ActionButtonExecutable, ACTION_BUTTON_EXEC_TYPE_EAVESDROP)
+        end
+        local edgeType = env(GetDockingEdgeRequest)
+        if edgeType == COVER_EDGE_TYPE_PEAK_MOVE_DISABLE_LOOK or edgeType == COVER_EDGE_TYPE_PEAK_MOVE_FREE_LOOK or edgeType == COVER_EDGE_TYPE_PEAK_MOVE_LEFT_LOOK_ONLY or edgeType == COVER_EDGE_TYPE_PEAK_MOVE_RIGHT_LOOK_ONLY then
+            act(SetMovePrecalculationAniID, MOVE_DISTANCE_PRE_CALCULATE_TYPE_AIR_WIRE_SHOOT, MOVE_DISTANCE_PRE_CALCULATE_ANIM_ID_AIR_WIRE_SHOOT)
+        elseif GetWireMoveStartIndex(current_hkb_state) == WIRE_MOVE_START_INDEX_UPSLOPE then
+            act(SetMovePrecalculationAniID, MOVE_DISTANCE_PRE_CALCULATE_TYPE_GROUND_WIRE_MOVE_START, MOVE_DISTANCE_PRE_CALCULATE_ANIM_ID_GROUND_WIRE_MOVE_START_UPPER_SLOPE)
+        elseif GetWireMoveStartIndex(current_hkb_state) == WIRE_MOVE_START_INDEX_VERTICAL then
+            act(SetMovePrecalculationAniID, MOVE_DISTANCE_PRE_CALCULATE_TYPE_GROUND_WIRE_MOVE_START, MOVE_DISTANCE_PRE_CALCULATE_ANIM_ID_GROUND_WIRE_MOVE_START_UP)
+        else
+            act(SetMovePrecalculationAniID, MOVE_DISTANCE_PRE_CALCULATE_TYPE_GROUND_WIRE_MOVE_START, MOVE_DISTANCE_PRE_CALCULATE_ANIM_ID_GROUND_WIRE_MOVE_START_VERTICAL)
+        end
+        act(SetThrowPossibilityState_Attacker, THROWABLE_STATE_ATK_PC_STAND)
+        act(SetThrowPossibilityState_Defender, THROWABLE_STATE_DEF_COMMON_IMPOSSIBLE)
+    elseif currentStyle == STYLE_TYPE_COVER_LOOK then
+        _LandReset(current_hkb_state)
+        local dir = hkbGetVariable("Selector_CoverLookDir")
+        local edgeType = env(GetDockingEdgeRequest)
+        if edgeType == COVER_EDGE_TYPE_PEAK_MOVE_DISABLE_LOOK or edgeType == COVER_EDGE_TYPE_PEAK_MOVE_FREE_LOOK or edgeType == COVER_EDGE_TYPE_PEAK_MOVE_LEFT_LOOK_ONLY or edgeType == COVER_EDGE_TYPE_PEAK_MOVE_RIGHT_LOOK_ONLY then
+            act(SetMovePrecalculationAniID, MOVE_DISTANCE_PRE_CALCULATE_TYPE_AIR_WIRE_SHOOT, MOVE_DISTANCE_PRE_CALCULATE_ANIM_ID_AIR_WIRE_SHOOT)
+        elseif GetWireMoveStartIndex(current_hkb_state) == WIRE_MOVE_START_INDEX_UPSLOPE then
+            act(SetMovePrecalculationAniID, MOVE_DISTANCE_PRE_CALCULATE_TYPE_GROUND_WIRE_MOVE_START, MOVE_DISTANCE_PRE_CALCULATE_ANIM_ID_GROUND_WIRE_MOVE_START_UPPER_SLOPE)
+        elseif GetWireMoveStartIndex(current_hkb_state) == WIRE_MOVE_START_INDEX_VERTICAL then
+            act(SetMovePrecalculationAniID, MOVE_DISTANCE_PRE_CALCULATE_TYPE_GROUND_WIRE_MOVE_START, MOVE_DISTANCE_PRE_CALCULATE_ANIM_ID_GROUND_WIRE_MOVE_START_UP)
+        else
+            act(SetMovePrecalculationAniID, MOVE_DISTANCE_PRE_CALCULATE_TYPE_GROUND_WIRE_MOVE_START, MOVE_DISTANCE_PRE_CALCULATE_ANIM_ID_GROUND_WIRE_MOVE_START_VERTICAL)
+        end
+        if currentState == STATE_TYPE_STANDBY or current_hkb_state == HKB_STATE_COVER_ACTION_START or env(IsSpEffectBehaviorRefID, SP_EF_REF_TAE_CAMO_STANDBY_STATE) == TRUE or env(IsMoveCancelPossible) == TRUE then
+            if env(IsSpEffectBehaviorRefID, SP_EF_REF_DISABLE_USE_ITEM_REQUEST) == FALSE and env(IsSpEffectBehaviorRefID, SP_EF_REF_DISABLE_ALL_INPUT) == FALSE and env(IsSpEffectBehaviorRefID, SP_EF_REF_TAE_DISABLE_MAIN_MENU) == FALSE then
+                act(SetIsEquipmentChangeableFromMenu)
+            end
+            act(SetIsEventActionPossible)
+            act(ActionButtonExecutable, ACTION_BUTTON_EXEC_TYPE_ITEM_PICK)
+            act(ActionButtonExecutable, ACTION_BUTTON_EXEC_TYPE_EAVESDROP)
+        end
+        if dir == SELECTOR_COVER_LOOK_DIR_L then
+            act(SetThrowPossibilityState_Attacker, THROWABLE_STATE_ATK_PC_COVER_LOOK_L)
+        else
+            act(SetThrowPossibilityState_Attacker, THROWABLE_STATE_ATK_PC_COVER_LOOK_R)
+        end
+        act(SetThrowPossibilityState_Defender, THROWABLE_STATE_DEF_COMMON_IMPOSSIBLE)
+    elseif currentStyle == STYLE_TYPE_HANG then
+        _LandReset(current_hkb_state)
+        act(SetThrowPossibilityState_Attacker, THROWABLE_STATE_ATK_PC_HANG)
+        act(SetThrowPossibilityState_Defender, THROWABLE_STATE_DEF_COMMON_IMPOSSIBLE)
+        act(SetMovePrecalculationAniID, MOVE_DISTANCE_PRE_CALCULATE_TYPE_AIR_WIRE_SHOOT, MOVE_DISTANCE_PRE_CALCULATE_ANIM_ID_AIR_WIRE_SHOOT)
+        if currentState == STATE_TYPE_STANDBY or env(IsSpEffectBehaviorRefID, SP_EF_REF_TAE_CAMO_STANDBY_STATE) == TRUE or env(IsMoveCancelPossible) == TRUE then
+            if env(IsSpEffectBehaviorRefID, SP_EF_REF_DISABLE_USE_ITEM_REQUEST) == FALSE and env(IsSpEffectBehaviorRefID, SP_EF_REF_DISABLE_ALL_INPUT) == FALSE and env(IsSpEffectBehaviorRefID, SP_EF_REF_TAE_DISABLE_MAIN_MENU) == FALSE then
+                act(SetIsEquipmentChangeableFromMenu)
+            end
+            act(SetIsEventActionPossible)
+            act(ActionButtonExecutable, ACTION_BUTTON_EXEC_TYPE_ITEM_PICK)
+            act(ActionButtonExecutable, ACTION_BUTTON_EXEC_TYPE_EAVESDROP)
+        end
+        local edgeType = env(GetDockingEdgeRequest)
+        if edgeType == HANG_EDGE_TYPE_DISABLE_HOLD_FOOT then
+            act(SetMovePrecalculationAniID, MOVE_DISTANCE_PRE_CALCULATE_TYPE_HANG_TO_STAND, MOVE_DISTANCE_PRE_CALCULATE_ANIM_ID_HANG_TO_STAND)
+        else
+            act(SetMovePrecalculationAniID, MOVE_DISTANCE_PRE_CALCULATE_TYPE_HANG_TO_STAND, MOVE_DISTANCE_PRE_CALCULATE_ANIM_ID_HANG_TO_STAND_FOOT_HOLD)
+        end
+        if edgeType == HANG_EDGE_TYPE_DISABLE_HOLD_FOOT then
+            SetVariable("Selector_DockingTargetEdgeType", 0)
+        else
+            SetVariable("Selector_DockingTargetEdgeType", 1)
+        end
+    elseif currentStyle == STYLE_TYPE_SPRINT then
+        _LandReset(current_hkb_state)
+        if g_ValidateActionTable[BEH_A_GROUND_MOVE_STOP](current_hkb_state) == FALSE and g_ValidateActionTable[BEH_A_GROUND_STEP](current_hkb_state) == FALSE then
+            act(LockonFixedAngleCancel)
+        end
+        if GetWireMoveStartIndex(current_hkb_state) == WIRE_MOVE_START_INDEX_UPSLOPE then
+            act(SetMovePrecalculationAniID, MOVE_DISTANCE_PRE_CALCULATE_TYPE_GROUND_WIRE_MOVE_START, MOVE_DISTANCE_PRE_CALCULATE_ANIM_ID_GROUND_WIRE_MOVE_START_UPPER_SLOPE)
+        elseif GetWireMoveStartIndex(current_hkb_state) == WIRE_MOVE_START_INDEX_VERTICAL then
+            act(SetMovePrecalculationAniID, MOVE_DISTANCE_PRE_CALCULATE_TYPE_GROUND_WIRE_MOVE_START, MOVE_DISTANCE_PRE_CALCULATE_ANIM_ID_GROUND_WIRE_MOVE_START_UP)
+        else
+            act(SetMovePrecalculationAniID, MOVE_DISTANCE_PRE_CALCULATE_TYPE_GROUND_WIRE_MOVE_START, MOVE_DISTANCE_PRE_CALCULATE_ANIM_ID_GROUND_WIRE_MOVE_START_VERTICAL)
+        end
+        if (currentState == STATE_TYPE_STANDBY or env(IsMoveCancelPossible) == TRUE) and env(IsSpEffectBehaviorRefID, SP_EF_REF_DISABLE_USE_ITEM_REQUEST) == FALSE and env(IsSpEffectBehaviorRefID, SP_EF_REF_DISABLE_ALL_INPUT) == FALSE and env(IsSpEffectBehaviorRefID, SP_EF_REF_TAE_DISABLE_MAIN_MENU) == FALSE then
+            act(SetIsEquipmentChangeableFromMenu)
+        end
+        act(SetThrowPossibilityState_Attacker, THROWABLE_STATE_ATK_PC_STAND)
+        act(SetThrowPossibilityState_Defender, THROWABLE_STATE_DEF_PC_GROUND)
+    elseif currentStyle == STYLE_TYPE_FREE_FALL then
+        act(SuctionDisabled)
+        act(WireEdgesPrioritize)
+        if current_hkb_state == HKB_STATE_WALL_JUMP_START or current_hkb_state == HKB_STATE_BOUNCE_WALL_JUMP_READY or current_hkb_state == HKB_STATE_BOUNCE_WALL_JUMP_START then
+            act(LockonFixedAngleCancel)
+        end
+        if current_hkb_state == HKB_STATE_THROW_DEF_LARGE_BLOW_START or current_hkb_state == HKB_STATE_THROW_DEF_LARGE_BLOW_FALL_LOOP then
+            act(SetMovePrecalculationAniID, MOVE_DISTANCE_PRE_CALCULATE_TYPE_AIR_BREAK_FALL_WIRE_SHOOT, MOVE_DISTANCE_PRE_CALCULATE_ANIM_ID_AIR_BREAK_FALL_WIRE_SHOOT)
+        else
+            act(SetMovePrecalculationAniID, MOVE_DISTANCE_PRE_CALCULATE_TYPE_AIR_WIRE_SHOOT, MOVE_DISTANCE_PRE_CALCULATE_ANIM_ID_AIR_WIRE_SHOOT)
+        end
+        act(SetThrowPossibilityState_Attacker, THROWABLE_STATE_ATK_PC_NORMAL_FALL)
+        act(SetThrowPossibilityState_Defender, THROWABLE_STATE_DEF_PC_AIR)
+    elseif currentStyle == STYLE_TYPE_WIRE_FALL then
+        act(SuctionDisabled)
+        act(WireEdgesPrioritize)
+        if current_hkb_state == HKB_STATE_WIRE_MOVE_WIRE_MOVE_START then
+            act(SetMovePrecalculationAniID, MOVE_DISTANCE_PRE_CALCULATE_TYPE_WIRE_MOVE_WIRE_SHOOT, MOVE_DISTANCE_PRE_CALCULATE_ANIM_ID_WIRE_MOVE_WIRE_SHOOT_2)
+        else
+            act(SetMovePrecalculationAniID, MOVE_DISTANCE_PRE_CALCULATE_TYPE_WIRE_MOVE_WIRE_SHOOT, MOVE_DISTANCE_PRE_CALCULATE_ANIM_ID_WIRE_MOVE_WIRE_SHOOT)
+        end
+        act(SetThrowPossibilityState_Attacker, THROWABLE_STATE_ATK_PC_WIRE_FALL)
+        act(SetThrowPossibilityState_Defender, THROWABLE_STATE_DEF_PC_AIR)
+    elseif currentStyle == STYLE_TYPE_CLING then
+        act(SetThrowPossibilityState_Attacker, THROWABLE_STATE_ATK_COMMON_IMPOSSIBLE)
+        act(SetThrowPossibilityState_Defender, THROWABLE_STATE_DEF_COMMON_IMPOSSIBLE)
+    elseif currentStyle == STYLE_TYPE_SWIM or currentStyle == STYLE_TYPE_AGING_SWIM then
+        _LandReset(current_hkb_state)
+        if current_hkb_state ~= HKB_STATE_SWIM_DEFLECT_GUARD_START and current_hkb_state ~= HKB_STATE_SWIM_DEFLECT_GUARD_LOOP and current_hkb_state ~= HKB_STATE_SWIM_GUARD_QUICK_TURN_LEFT_180 and current_hkb_state ~= HKB_STATE_SWIM_GUARD_QUICK_TURN_RIGHT_180 and current_hkb_state ~= HKB_STATE_SWIM_ATTACK_COMBO_1 and current_hkb_state ~= HKB_STATE_SWIM_ATTACK_COMBO_2 and current_hkb_state ~= HKB_STATE_SWIM_ATTACK_COMBO_3 and current_hkb_state ~= HKB_STATE_SWIM_ATTACK_COMBO_1_RELEASE and current_hkb_state ~= HKB_STATE_SWIM_ATTACK_COMBO_2_RELEASE and current_hkb_state ~= HKB_STATE_SWIM_ATTACK_COMBO_3_RELEASE and current_hkb_state ~= HKB_STATE_SWIM_KICK_MOVE_ATTACK then
+            act(SwitchMotion, TRUE)
+        end
+        act(OnWater)
+        if current_hkb_state ~= HKB_STATE_SWIM_ATTACK_COMBO_1 and current_hkb_state ~= HKB_STATE_SWIM_ATTACK_COMBO_1_RELEASE and current_hkb_state ~= HKB_STATE_SWIM_ATTACK_COMBO_2 and current_hkb_state ~= HKB_STATE_SWIM_ATTACK_COMBO_2_RELEASE and current_hkb_state ~= HKB_STATE_SWIM_ATTACK_COMBO_3 and current_hkb_state ~= HKB_STATE_SWIM_ATTACK_COMBO_3_RELEASE and current_hkb_state ~= HKB_STATE_SWIM_KICK_MOVE_ATTACK and current_hkb_state ~= HKB_STATE_SWIM_DEFLECT_GUARD_START and current_hkb_state ~= HKB_STATE_SWIM_DEFLECT_GUARD_LOOP and current_hkb_state ~= HKB_STATE_SWIM_KICK_MOVE_GUARD_START and current_hkb_state ~= HKB_STATE_SWIM_DEFLECT_EASY_SMALL and current_hkb_state ~= HKB_STATE_SWIM_DEFLECT_HARD_SMALL and current_hkb_state ~= HKB_STATE_SWIM_DEFLECT_EASY_LARGE and current_hkb_state ~= HKB_STATE_SWIM_DEFLECT_HARD_LARGE and current_hkb_state ~= HKB_STATE_SWIM_GUARD_QUICK_TURN_LEFT_180 and current_hkb_state ~= HKB_STATE_SWIM_GUARD_QUICK_TURN_RIGHT_180 then
+            act(LockonFixedAngleCancel)
+        end
+        if currentState == STATE_TYPE_STANDBY or env(IsSpEffectBehaviorRefID, SP_EF_REF_TAE_CAMO_STANDBY_STATE) == TRUE or env(IsMoveCancelPossible) == TRUE then
+            if env(IsSpEffectBehaviorRefID, SP_EF_REF_DISABLE_USE_ITEM_REQUEST) == FALSE and env(IsSpEffectBehaviorRefID, SP_EF_REF_DISABLE_ALL_INPUT) == FALSE and env(IsSpEffectBehaviorRefID, SP_EF_REF_TAE_DISABLE_MAIN_MENU) == FALSE then
+                act(SetIsEquipmentChangeableFromMenu)
+            end
+            act(SetIsEventActionPossible)
+            act(ActionButtonExecutable, ACTION_BUTTON_EXEC_TYPE_BASE)
+            act(ActionButtonExecutable, ACTION_BUTTON_EXEC_TYPE_ITEM_PICK)
+            act(ActionButtonExecutable, ACTION_BUTTON_EXEC_TYPE_EAVESDROP)
+        end
+        act(SetMovePrecalculationAniID, MOVE_DISTANCE_PRE_CALCULATE_TYPE_SWIM_TO_DIVE, MOVE_DISTANCE_PRE_CALCULATE_ANIM_ID_SWIM_TO_DIVE)
+        if current_hkb_state == HKB_STATE_DIVE_TO_SWIM then
+            act(SetMovePrecalculationAniID, MOVE_DISTANCE_PRE_CALCULATE_TYPE_DIVE_TO_SWIM, MOVE_DISTANCE_PRE_CALCULATE_ANIM_ID_DIVE_TO_AIR_2)
+        end
+        act(SetMovePrecalculationAniID, MOVE_DISTANCE_PRE_CALCULATE_TYPE_SWIM_WIRE_MOVE_START, MOVE_DISTANCE_PRE_CALCULATE_ANIM_ID_SWIM_WIRE_MOVE_START)
+        act(SetThrowPossibilityState_Attacker, THROWABLE_STATE_ATK_COMMON_IMPOSSIBLE)
+        act(SetThrowPossibilityState_Defender, THROWABLE_STATE_DEF_PC_SWIM)
+    elseif currentStyle == STYLE_TYPE_DIVE or currentStyle == STYLE_TYPE_AGING_DIVE then
+        if current_hkb_state ~= HKB_STATE_DIVE_DEFLECT_GUARD_START and current_hkb_state ~= HKB_STATE_DIVE_DEFLECT_GUARD_LOOP and current_hkb_state ~= HKB_STATE_DIVE_GUARD_QUICK_TURN_LEFT_180 and current_hkb_state ~= HKB_STATE_DIVE_GUARD_QUICK_TURN_RIGHT_180 and current_hkb_state ~= HKB_STATE_DIVE_ATTACK_COMBO_1 and current_hkb_state ~= HKB_STATE_DIVE_ATTACK_COMBO_2 and current_hkb_state ~= HKB_STATE_DIVE_ATTACK_COMBO_3 and current_hkb_state ~= HKB_STATE_DIVE_ATTACK_COMBO_1_RELEASE and current_hkb_state ~= HKB_STATE_DIVE_ATTACK_COMBO_2_RELEASE and current_hkb_state ~= HKB_STATE_DIVE_ATTACK_COMBO_3_RELEASE and current_hkb_state ~= HKB_STATE_DIVE_KICK_MOVE_ATTACK then
+            act(SwitchMotion, TRUE)
+        end
+        if current_hkb_state == HKB_STATE_DIVE_MOVE_UP_START or current_hkb_state == HKB_STATE_DIVE_MOVE_UP_LOOP or current_hkb_state == HKB_STATE_DIVE_MOVE_DOWN_START or current_hkb_state == HKB_STATE_DIVE_MOVE_DOWN_LOOP or current_hkb_state == HKB_STATE_DIVE_KICK_MOVE_UP_1 or current_hkb_state == HKB_STATE_DIVE_KICK_MOVE_UP_2 or current_hkb_state == HKB_STATE_DIVE_KICK_MOVE_DOWN_1 or current_hkb_state == HKB_STATE_DIVE_KICK_MOVE_DOWN_2 then
+            _DiveSpeedUpdate(current_hkb_state)
+        end
+        act(Underwater)
+        if currentState == STATE_TYPE_STANDBY or env(IsSpEffectBehaviorRefID, SP_EF_REF_TAE_CAMO_STANDBY_STATE) == TRUE or env(IsMoveCancelPossible) == TRUE then
+            if env(IsSpEffectBehaviorRefID, SP_EF_REF_DISABLE_USE_ITEM_REQUEST) == FALSE and env(IsSpEffectBehaviorRefID, SP_EF_REF_DISABLE_ALL_INPUT) == FALSE and env(IsSpEffectBehaviorRefID, SP_EF_REF_TAE_DISABLE_MAIN_MENU) == FALSE then
+                act(SetIsEquipmentChangeableFromMenu)
+            end
+            act(SetIsEventActionPossible)
+            act(ActionButtonExecutable, ACTION_BUTTON_EXEC_TYPE_ITEM_PICK)
+            act(ActionButtonExecutable, ACTION_BUTTON_EXEC_TYPE_DIVE_BASE)
+        end
+        if current_hkb_state ~= HKB_STATE_DIVE_ATTACK_COMBO_1 and current_hkb_state ~= HKB_STATE_DIVE_ATTACK_COMBO_1_RELEASE and current_hkb_state ~= HKB_STATE_DIVE_ATTACK_COMBO_2 and current_hkb_state ~= HKB_STATE_DIVE_ATTACK_COMBO_2_RELEASE and current_hkb_state ~= HKB_STATE_DIVE_ATTACK_COMBO_3 and current_hkb_state ~= HKB_STATE_DIVE_ATTACK_COMBO_3_RELEASE and current_hkb_state ~= HKB_STATE_DIVE_KICK_MOVE_ATTACK and current_hkb_state ~= HKB_STATE_DIVE_DEFLECT_GUARD_START and current_hkb_state ~= HKB_STATE_DIVE_DEFLECT_GUARD_LOOP and current_hkb_state ~= HKB_STATE_DIVE_KICK_MOVE_GUARD_START and current_hkb_state ~= HKB_STATE_DIVE_DEFLECT_EASY_SMALL and current_hkb_state ~= HKB_STATE_DIVE_DEFLECT_HARD_SMALL and current_hkb_state ~= HKB_STATE_DIVE_DEFLECT_EASY_LARGE and current_hkb_state ~= HKB_STATE_DIVE_DEFLECT_HARD_LARGE and current_hkb_state ~= HKB_STATE_DIVE_GUARD_QUICK_TURN_LEFT_180 and current_hkb_state ~= HKB_STATE_DIVE_GUARD_QUICK_TURN_RIGHT_180 then
+            act(LockonFixedAngleCancel)
+        end
+        act(SetMovePrecalculationAniID, MOVE_DISTANCE_PRE_CALCULATE_TYPE_DIVE_TO_SWIM, MOVE_DISTANCE_PRE_CALCULATE_ANIM_ID_DIVE_TO_SWIM)
+        act(SetMovePrecalculationAniID, MOVE_DISTANCE_PRE_CALCULATE_TYPE_DIVE_TO_SWIM, MOVE_DISTANCE_PRE_CALCULATE_ANIM_ID_DIVE_TO_AIR)
+        act(SetThrowPossibilityState_Attacker, THROWABLE_STATE_ATK_PC_DIVE)
+        act(SetThrowPossibilityState_Defender, THROWABLE_STATE_DEF_PC_DIVE)
+    elseif currentStyle == STYLE_TYPE_AGING_STAND then
+        _LandReset(current_hkb_state)
+        if current_hkb_state ~= HKB_STATE_AGING_GROUND_ATTACK then
+            act(LockonFixedAngleCancel)
+        end
+        if currentState == STATE_TYPE_STANDBY or env(IsSpEffectBehaviorRefID, SP_EF_REF_TAE_CAMO_STANDBY_STATE) == TRUE or env(IsMoveCancelPossible) == TRUE then
+            if env(IsSpEffectBehaviorRefID, SP_EF_REF_DISABLE_USE_ITEM_REQUEST) == FALSE and env(IsSpEffectBehaviorRefID, SP_EF_REF_DISABLE_ALL_INPUT) == FALSE and env(IsSpEffectBehaviorRefID, SP_EF_REF_TAE_DISABLE_MAIN_MENU) == FALSE then
+                act(SetIsEquipmentChangeableFromMenu)
+            end
+            act(SetIsEventActionPossible)
+            act(ActionButtonExecutable, ACTION_BUTTON_EXEC_TYPE_BASE)
+            act(ActionButtonExecutable, ACTION_BUTTON_EXEC_TYPE_ITEM_PICK)
+        end
+        act(SetThrowPossibilityState_Attacker, THROWABLE_STATE_ATK_PC_AGING)
+        act(SetThrowPossibilityState_Defender, THROWABLE_STATE_DEF_PC_GROUND)
+    elseif currentStyle == STYLE_TYPE_AGING_FALL then
+        act(LockonFixedAngleCancel)
+        act(SetThrowPossibilityState_Attacker, THROWABLE_STATE_ATK_PC_AGING_FALL)
+        act(SetThrowPossibilityState_Defender, THROWABLE_STATE_DEF_PC_AIR)
+    end
+    local f19_local0 = {[ACTION_ARM_WALL_HANG] = FALSE, [ACTION_ARM_JUMP] = FALSE, [ACTION_ARM_SP_MOVE] = FALSE}
+    local isMoveable = env(IsMoveCancelPossible)
+    local isStandby = env(IsStayState)
+    local isCamoStandby = env(IsSpEffectBehaviorRefID, SP_EF_REF_TAE_CAMO_STANDBY_STATE)
+
+    local _enableActionGuide = function (isStandby, isMoveable, currentState)
+        if isStandby == TRUE and currentState ~= STATE_TYPE_STANDBY_SUB_GUARD or currentState ~= STATE_TYPE_REACTION_DEATH and currentState ~= STATE_TYPE_REACTION_DEATH_START and currentState ~= STATE_TYPE_REACTION_DEATH_LOOP and currentState ~= STATE_TYPE_REACTION_DEATH_REVIVAL_STAY_LOOP and currentState ~= STATE_TYPE_REACTION_THROW_DEATH_START and currentState ~= STATE_TYPE_REACTION_THROW_DEATH_LOOP and currentState ~= STATE_TYPE_REACTION_THROW_DEATH_REVIVAL_STAY_LOOP and currentState ~= STATE_TYPE_EVENT_NPC_TALK_LOOP and currentState ~= STATE_TYPE_EVENT_EAVESDROP_LOOP and currentState ~= STATE_TYPE_STANDBY_SUB_GUARD and currentState ~= STATE_TYPE_ACTION_SUB_GUARD and currentState ~= STATE_TYPE_REACTION_SUB_GUARD and (isMoveable == TRUE or currentState ~= STATE_TYPE_ACTION_THROW_ATK) and (isMoveable == TRUE or currentState ~= STATE_TYPE_ACTION_THROW_ATK_KILL) and (isMoveable == TRUE or currentState ~= STATE_TYPE_REACTION_THROW_DEF) and (isMoveable == TRUE or currentState ~= STATE_TYPE_REACTION_THROW_ESCAPE) and (isMoveable == TRUE or currentState ~= STATE_TYPE_EVENT) and (isMoveable == TRUE or currentState ~= STATE_TYPE_EVENT_ENABLE_ACTION_BUTTON) and (isMoveable == TRUE or currentState ~= STATE_TYPE_EVENT_NPC_TALK_END) and (isMoveable == TRUE or currentState ~= STATE_TYPE_EVENT_EAVESDROP_END) then
+            return TRUE
+        end
+        return FALSE
+        
+    end
+
+    local f19_local1 = function (isStandby, isMoveable, currentState)
+        if isStandby == TRUE or (isMoveable == TRUE or current_hkb_state ~= HKB_STATE_STAND_TO_HANG) and (isMoveable == TRUE or current_hkb_state ~= HKB_STATE_STAND_TO_HANG2) and (isMoveable == TRUE or current_hkb_state ~= HKB_STATE_STAND_TO_HANG_1_BACK) and (isMoveable == TRUE or current_hkb_state ~= HKB_STATE_STAND_TO_HANG_2_BACK) and (isMoveable == TRUE or current_hkb_state ~= HKB_STATE_STAND_TO_HANG_FOOT_HOLD_1) and (isMoveable == TRUE or current_hkb_state ~= HKB_STATE_STAND_TO_HANG_FOOT_HOLD_2) and (isMoveable == TRUE or current_hkb_state ~= HKB_STATE_STAND_TO_HANG_FOOT_HOLD_1_BACK) and (isMoveable == TRUE or current_hkb_state ~= HKB_STATE_STAND_TO_HANG_FOOT_HOLD_2_BACK) and (isMoveable == TRUE or current_hkb_state ~= HKB_STATE_FREE_FALL_TO_HANG) and (isMoveable == TRUE or current_hkb_state ~= HKB_STATE_FREE_FALL_TO_HANG_LEFT) and (isMoveable == TRUE or current_hkb_state ~= HKB_STATE_FREE_FALL_TO_HANG_RIGHT) and (isMoveable == TRUE or current_hkb_state ~= HKB_STATE_FREE_FALL_TO_HANG_FOOT_HOLD) and (isMoveable == TRUE or current_hkb_state ~= HKB_STATE_FREE_FALL_TO_HANG_FOOT_HOLD_LEFT) and (isMoveable == TRUE or current_hkb_state ~= HKB_STATE_FREE_FALL_TO_HANG_FOOT_HOLD_RIGHT) and (isMoveable == TRUE or current_hkb_state ~= HKB_STATE_FREE_FALL_TO_HANG_LONG_RANGE) and (isMoveable == TRUE or current_hkb_state ~= HKB_STATE_FREE_FALL_TO_HANG_LONG_RANGE_LEFT) and (isMoveable == TRUE or current_hkb_state ~= HKB_STATE_FREE_FALL_TO_HANG_LONG_RANGE_RIGHT) and (isMoveable == TRUE or current_hkb_state ~= HKB_STATE_FREE_FALL_TO_HANG_FOOT_HOLD_LONG_RANGE) and (isMoveable == TRUE or current_hkb_state ~= HKB_STATE_FREE_FALL_TO_HANG_FOOT_HOLD_LONG_RANGE_LEFT) and (isMoveable == TRUE or current_hkb_state ~= HKB_STATE_FREE_FALL_TO_HANG_FOOT_HOLD_LONG_RANGE_RIGHT) and current_hkb_state ~= HKB_STATE_GROUND_WIRE_SHOOT and current_hkb_state ~= HKB_STATE_GROUND_WIRE_MOVE_READY and current_hkb_state ~= HKB_STATE_SPRINT_WIRE_SHOOT and current_hkb_state ~= HKB_STATE_SPRINT_WIRE_MOVE_READY and (isCamoStandby == TRUE or current_hkb_state ~= HKB_STATE_GROUND_WIRE_MOVE_START) and (isCamoStandby == TRUE or current_hkb_state ~= HKB_STATE_SPRINT_WIRE_MOVE_START) then
+            return TRUE
+        end
+        return FALSE
+        
+    end
+
+    local f19_local2 = function (isStandby, isMoveable, currentState)
+        if isStandby == TRUE or current_hkb_state ~= HKB_STATE_AIR_WIRE_SHOOT and current_hkb_state ~= HKB_STATE_AIR_WIRE_MOVE_READY and current_hkb_state ~= HKB_STATE_AIR_BREAK_FALL_WIRE_SHOOT and current_hkb_state ~= HKB_STATE_AIR_BREAK_FALL_WIRE_MOVE_READY and current_hkb_state ~= HKB_STATE_WIRE_MOVE_WIRE_SHOOT and current_hkb_state ~= HKB_STATE_WIRE_MOVE_WIRE_2_SHOOT and (isCamoStandby == TRUE or current_hkb_state ~= HKB_STATE_AIR_WIRE_MOVE_START) and (isCamoStandby == TRUE or current_hkb_state ~= HKB_STATE_AIR_BREAK_FALL_WIRE_MOVE_START) and (isCamoStandby == TRUE or current_hkb_state ~= HKB_STATE_WIRE_MOVE_WIRE_MOVE_START) and (isCamoStandby == TRUE or current_hkb_state ~= HKB_STATE_WIRE_MOVE_WIRE_2_MOVE_START) then
+            return TRUE
+        end
+        return FALSE
+        
+    end
+
+    local f19_local3 = function (isStandby, isMoveable, currentState)
+        if isStandby == TRUE or (isMoveable == TRUE or current_hkb_state ~= HKB_STATE_STAND_TO_COVER_2_BACK) and (isMoveable == TRUE or current_hkb_state ~= HKB_STATE_STAND_TO_COVER_2_LEFT) and (isMoveable == TRUE or current_hkb_state ~= HKB_STATE_STAND_TO_COVER_2_RIGHT) and (isMoveable == TRUE or current_hkb_state ~= HKB_STATE_STAND_TO_COVER_2_LEFT_180) and (isMoveable == TRUE or current_hkb_state ~= HKB_STATE_STAND_TO_COVER_2_RIGHT_180) and (isMoveable == TRUE or current_hkb_state ~= HKB_STATE_MOVE_TO_COVER_LEFT) and (isMoveable == TRUE or current_hkb_state ~= HKB_STATE_MOVE_TO_COVER_RIGHT) then
+            return TRUE
+        end
+        return FALSE
+        
+    end
+
+    local f19_local4 = function (isStandby, isMoveable, currentState)
+        if isStandby == TRUE or isMoveable == TRUE or current_hkb_state ~= HKB_STATE_DIVE_TO_SWIM then
+            return TRUE
+        end
+        return FALSE
+        
+    end
+
+    local f19_local5 = function (isStandby, isMoveable, currentState)
+        if isStandby == TRUE or isMoveable == TRUE or current_hkb_state ~= HKB_STATE_SWIM_TO_DIVE then
+            return TRUE
+        end
+        return FALSE
+        
+    end
+
+    if g_behaviorTable[BEH_A_COVER_START][currentStyle] == TRUE then
+        act(WallCoverJudgmentStart)
+        if f19_local0[ACTION_ARM_WALL_HANG] == FALSE and g_forceCrouch == FALSE and env(IsWallHangPossible) == TRUE and env(IsSpEffectBehaviorRefID, SP_EF_REF_TAE_DISABLE_COVER_START) == FALSE and env(IsDebugDash) == FALSE and _enableActionGuide(isStandby, isMoveable, currentState) == TRUE then
+            act(3030, ACTION_GUIDE_COVER_START, ACTION_ARM_WALL_HANG)
+            f19_local0[ACTION_ARM_WALL_HANG] = TRUE
+        end
+    end
+    if g_behaviorTable[BEH_A_COVER_END][currentStyle] == TRUE and f19_local0[ACTION_ARM_WALL_HANG] == FALSE and f19_local3(isStandby, isMoveable, currentState) == TRUE and _enableActionGuide(isStandby, isMoveable, currentState) == TRUE then
+        act(3030, ACTION_GUIDE_COVER_END, ACTION_ARM_WALL_HANG)
+        f19_local0[ACTION_ARM_WALL_HANG] = TRUE
+    end
+    if g_behaviorTable[BEH_A_GROUND_HANG_START][currentStyle] == TRUE then
+        act(GroundHangJudgmentStart)
+        if f19_local0[ACTION_ARM_WALL_HANG] == FALSE and env(IsWallHangGroundPossible) == TRUE and env(IsDebugDash) == FALSE and f19_local1(isStandby, isMoveable, currentState) == TRUE and _enableActionGuide(isStandby, isMoveable, currentState) == TRUE then
+            act(3030, ACTION_GUIDE_HANG_START, ACTION_ARM_WALL_HANG)
+            f19_local0[ACTION_ARM_WALL_HANG] = TRUE
+        end
+    end
+    if g_behaviorTable[BEH_A_HANG_CLIMB][currentStyle] == TRUE and f19_local0[ACTION_ARM_WALL_HANG] == FALSE and env(IsHangAndClimbPossible) == TRUE and f19_local1(isStandby, isMoveable, currentState) == TRUE and _enableActionGuide(isStandby, isMoveable, currentState) == TRUE then
+        act(3030, ACTION_GUIDE_HAMG_TO_STAND, ACTION_ARM_WALL_HANG)
+        f19_local0[ACTION_ARM_WALL_HANG] = TRUE
+    end
+    if g_behaviorTable[BEH_A_HANG_FALL][currentStyle] == TRUE and f19_local0[ACTION_ARM_SP_MOVE] == FALSE and f19_local1(isStandby, isMoveable, currentState) == TRUE and _enableActionGuide(isStandby, isMoveable, currentState) == TRUE then
+        act(3030, ACTION_GUIDE_HAMG_TO_FALL, ACTION_ARM_SP_MOVE)
+        f19_local0[ACTION_ARM_SP_MOVE] = TRUE
+    end
+    if g_behaviorTable[BEH_A_AIR_HANG_START][currentStyle] == TRUE then
+        act(AirHangJudgmentStart)
+        if f19_local0[ACTION_ARM_WALL_HANG] == FALSE and env(IsWallHangAirPossible) ~= AIR_HANG_TYPE_DISABLE and f19_local2(isStandby, isMoveable, currentState) == TRUE and _enableActionGuide(isStandby, isMoveable, currentState) == TRUE then
+            act(3030, ACTION_GUIDE_HANG_START, ACTION_ARM_WALL_HANG)
+            f19_local0[ACTION_ARM_WALL_HANG] = TRUE
+        end
+    end
+    if g_behaviorTable[BEH_R_DIVE_TO_SWIM][currentStyle] == TRUE and f19_local0[ACTION_ARM_JUMP] == FALSE and env(IsDiveToSwimAllowed) == TRUE and f19_local5(isStandby, isMoveable, currentState) == TRUE and _enableActionGuide(isStandby, isMoveable, currentState) == TRUE then
+        act(3030, ACTION_GUIDE_DIVE_TO_SWIM, ACTION_ARM_JUMP)
+        f19_local0[ACTION_ARM_JUMP] = TRUE
+    end
+    if g_behaviorTable[BEH_A_SWIM_TO_DIVE][currentStyle] == TRUE and f19_local0[ACTION_ARM_SP_MOVE] == FALSE and env(IsDiveAllowed) == TRUE and env(ActionUnlocked, ACTION_UNLOCK_TYPE_DIVE) == TRUE and env(IsDebugDash) == FALSE and f19_local4(isStandby, isMoveable, currentState) == TRUE and _enableActionGuide(isStandby, isMoveable, currentState) == TRUE then
+        act(3030, ACTION_GUIDE_SWIM_TO_DIVE, ACTION_ARM_SP_MOVE)
+        f19_local0[ACTION_ARM_SP_MOVE] = TRUE
+    end
+    _UpdateFallProtection(current_hkb_state)
+    _UpdateAutoAim()
+    _UpdateThrowAnimSelector()
+    _UpdateNextThrowInfo(current_hkb_state)
+    local groundJumpType = hkbGetVariable("Selector_GroundJumpType")
+    if (current_hkb_state == HKB_STATE_GROUND_JUMP_READY or current_hkb_state == HKB_STATE_GROUND_JUMP_START or current_hkb_state == HKB_STATE_SWAMP_JUMP_START or current_hkb_state == GROUND_JUMP_FALL) and groundJumpType == SELECTOR_GROUND_JUMP_TYPE_FORWARD_LOCKON or (current_hkb_state == HKB_STATE_GROUND_KICK_ENEMY_JUMP_START or current_hkb_state == HKB_STATE_AIR_KICK_ENEMY_JUMP_START) and (groundJumpType == SELECTOR_GROUND_JUMP_TYPE_VERTICAL or groundJumpType == SELECTOR_GROUND_JUMP_TYPE_FORWARD or groundJumpType == SELECTOR_GROUND_JUMP_TYPE_FORWARD_LOCKON) or (current_hkb_state == HKB_STATE_GROUND_SPECIAL_ATTACK_JUMP_READY or current_hkb_state == HKB_STATE_SPRINT_SPECIAL_ATTACK_JUMP_READY or current_hkb_state == HKB_STATE_GROUND_SPECIAL_ATTACK_JUMP_START) and groundJumpType == SELECTOR_GROUND_JUMP_TYPE_FORWARD_LOCKON then
+        act(LockHomingAction, 1)
+    end
+    if env(IsSpEffectBehaviorRefID, SP_EF_REF_TAE_ENABLE_SP_STATE_TO_STATE_BLEND) == TRUE and hkbGetVariable("MoveSpeedLevel") > 0 and (hkbGetVariable("MoveSpeedIndex") ~= g_beforeMoveSpeedIndex or hkbGetVariable("MoveDirection") ~= g_beforeMoveDirection) then
+        act(AddSpEffect, SP_EFFECT_SP_STATE_TO_STATE_BLEND)
+    end
+    if env(IsSpEffectBehaviorRefID, SP_EF_REF_SP_STATE_TO_STATE_BLEND) == TRUE then
+        SetVariable("Selector_UseStaterToStateTransitionEffect", SELECTOR_USE_STS_TE_TAE_BLEND)
+    else
+        SetVariable("Selector_UseStaterToStateTransitionEffect", SELECTOR_USE_STS_TE_STATE_TO_STATE_BLEND_IGNORE_TO_WORLD)
+    end
+    if currentStyle == STYLE_TYPE_WIRE_FALL or current_hkb_state == HKB_STATE_GROUND_WIRE_SHOOT or current_hkb_state == HKB_STATE_GROUND_WIRE_MOVE_READY or current_hkb_state == HKB_STATE_AIR_WIRE_SHOOT or current_hkb_state == HKB_STATE_AIR_WIRE_MOVE_READY or current_hkb_state == HKB_STATE_AIR_BREAK_FALL_WIRE_SHOOT or current_hkb_state == HKB_STATE_AIR_BREAK_FALL_WIRE_MOVE_READY or current_hkb_state == HKB_STATE_AIR_BREAK_FALL_WIRE_MOVE_START or current_hkb_state == HKB_STATE_SPRINT_WIRE_SHOOT or current_hkb_state == HKB_STATE_SPRINT_WIRE_MOVE_READY or current_hkb_state == HKB_STATE_SWIM_WIRE_MOVE_READY or current_hkb_state == HKB_STATE_SWIM_WIRE_MOVE_START then
+        act(WireAction, 1)
+    end
+    if current_hkb_state ~= HKB_STATE_GROUND_WIRE_SHOOT and current_hkb_state ~= HKB_STATE_GROUND_WIRE_MOVE_READY and current_hkb_state ~= HKB_STATE_SPRINT_WIRE_SHOOT and current_hkb_state ~= HKB_STATE_SPRINT_WIRE_MOVE_READY and current_hkb_state ~= HKB_STATE_AIR_WIRE_SHOOT and current_hkb_state == HKB_STATE_AIR_WIRE_MOVE_READY then
+    end
+    if env(IsSpEffectBehaviorRefID, SP_EF_REF_TAE_LOCK_TARGET_GEN_SP_SOUND_SHOT) == TRUE then
+        act(AddSpEffectToLockOnTarget, SP_EFFECT_SOUND_SHOT_TARGET)
+    end
+    if env(LipSyncRequest) == ADD_BLEND_SPEAK_PLAY and IsNodeActive("AddBlendSpeak_0_CMSG", "AddBlendSpeak_1_CMSG", "AddBlendSpeak_2_CMSG") == FALSE then
+        SetVariable("AddBlendSpeakIndex", math.random(0, 2))
+        FireEventNoReset("W_AddBlendSpeakFadeIn")
+    end
+    if env(LipSyncRequest) == ADD_BLEND_SPEAK_NONE and IsNodeActive("AddBlendSpeak_0_CMSG", "AddBlendSpeak_1_CMSG", "AddBlendSpeak_2_CMSG") == TRUE then
+        FireEventNoReset("W_AddBlendSpeakFadeOut")
+    end
+    
+end
+
+global = {}
+
+function dummy()
+    
+end
+
+global.__index = function (table, element)
+    return dummy
+    
+end
+
+setmetatable(_G, global)
+

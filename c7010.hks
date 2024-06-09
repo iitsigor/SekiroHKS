@@ -1,0 +1,2070 @@
+﻿TALK_REF_C7010_DRINKING = 1701000
+TALK_REF_C7010_DIGGING = 1701001
+TALK_REF_C7010_TOUCH = 1701002
+TALK_REF_C7010_CROOSH = 1701003
+TALK_REF_C7010_DIGGING_END = 1701004
+TALK_REF_C7010_TOUCH_END = 1701005
+TALK_REF_C7010_CROOSH_END = 1701006
+
+function Event20000_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20000) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20001_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20001) == TRUE then
+        return
+    end
+    act(SetTalkAnimState, 0)
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Event21003")
+        return
+    end
+    
+end
+
+function Event20002_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20002) == TRUE then
+        return
+    end
+    act(SetTalkAnimState, 0)
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20003_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20003) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Event21004")
+        return
+    end
+    
+end
+
+function Event20004_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20004) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Event21004")
+        return
+    end
+    
+end
+
+function Event20005_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20005) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Event21004")
+        return
+    end
+    
+end
+
+function Event20006_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20006) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Event21004")
+        return
+    end
+    
+end
+
+function Event20007_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20007) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20008_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20008) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20009_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20009) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20010_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20010) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20011_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20011) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20012_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20012) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20013_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20013) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20014_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20014) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20015_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20015) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20016_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20016) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20017_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20017) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20018_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20018) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20019_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20019) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20020_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20020) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20021_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20021) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20022_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20022) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20023_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20023) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20024_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20024) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20025_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20025) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20026_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20026) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20027_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20027) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20028_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20028) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20029_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20029) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20030_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20030) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20031_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20031) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20032_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20032) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20033_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20033) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20034_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20034) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20035_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20035) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20036_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20036) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20037_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20037) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20038_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20038) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20039_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20039) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20040_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20040) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20041_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20041) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20042_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20042) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20043_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20043) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20044_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20044) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20045_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20045) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20046_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20046) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20047_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20047) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20048_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20048) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20049_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20049) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20050_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20050) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20051_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20051) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20052_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20052) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20053_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20053) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20054_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20054) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20055_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20055) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20056_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20056) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20057_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20057) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20058_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20058) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20059_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20059) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20060_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20060) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20061_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20061) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20062_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20062) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20063_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20063) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20064_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20064) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20065_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20065) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20066_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20066) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20067_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20067) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20068_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20068) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20069_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20069) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20070_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20070) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20071_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20071) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20072_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20072) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20073_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20073) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20074_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20074) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20075_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20075) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20076_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20076) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20077_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20077) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20078_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20078) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20079_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20079) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20080_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20080) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20081_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20081) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20082_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20082) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20083_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20083) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20084_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20084) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20085_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20085) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20086_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20086) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20087_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20087) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20088_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20088) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20089_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20089) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20090_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20090) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20091_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20091) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20092_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20092) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20093_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20093) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20094_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20094) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20095_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20095) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20096_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20096) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20097_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20097) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20098_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20098) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event20099_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(20099) == TRUE then
+        return
+    end
+    if env(IsAnimEnd, 1) == TRUE then
+        Fire("W_Idle")
+        return
+    end
+    
+end
+
+function Event21000_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21000) == TRUE then
+        return
+    end
+    
+end
+
+function Event21001_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21001) == TRUE then
+        return
+    end
+    
+end
+
+function Event21002_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21002) == TRUE then
+        return
+    end
+    
+end
+
+function Event21003_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21003) == TRUE then
+        return
+    end
+    act(SetTalkAnimState, 0)
+    
+end
+
+function Event21004_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if env(GetTalkEzStateRefID) ~= TALK_REF_C7010_DRINKING then
+        Fire("W_Event20010")
+    end
+    if EventCommonFunction(21004) == TRUE then
+        return
+    end
+    
+end
+
+function Event21005_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if env(GetTalkEzStateRefID) == TALK_REF_C7010_DIGGING_END then
+        Fire("W_Event20007")
+        return TRUE
+    end
+    if EventCommonFunction(21005) == TRUE then
+        return
+    end
+    act(SetTalkAnimState, TALK_REF_C7010_DIGGING)
+    
+end
+
+function Event21006_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if env(GetTalkEzStateRefID) == TALK_REF_C7010_TOUCH_END then
+        Fire("W_Event20008")
+        return TRUE
+    end
+    if EventCommonFunction(21006) == TRUE then
+        return
+    end
+    act(SetTalkAnimState, TALK_REF_C7010_TOUCH)
+    
+end
+
+function Event21007_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if env(GetTalkEzStateRefID) == TALK_REF_C7010_CROOSH_END then
+        Fire("W_Event20009")
+        return TRUE
+    end
+    if EventCommonFunction(21007) == TRUE then
+        return
+    end
+    act(SetTalkAnimState, TALK_REF_C7010_CROOSH)
+    
+end
+
+function Event21008_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21008) == TRUE then
+        return
+    end
+    
+end
+
+function Event21009_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21009) == TRUE then
+        return
+    end
+    
+end
+
+function Event21010_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21010) == TRUE then
+        return
+    end
+    
+end
+
+function Event21011_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21011) == TRUE then
+        return
+    end
+    
+end
+
+function Event21012_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21012) == TRUE then
+        return
+    end
+    
+end
+
+function Event21013_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21013) == TRUE then
+        return
+    end
+    
+end
+
+function Event21014_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21014) == TRUE then
+        return
+    end
+    
+end
+
+function Event21015_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21015) == TRUE then
+        return
+    end
+    
+end
+
+function Event21016_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21016) == TRUE then
+        return
+    end
+    
+end
+
+function Event21017_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21017) == TRUE then
+        return
+    end
+    
+end
+
+function Event21018_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21018) == TRUE then
+        return
+    end
+    
+end
+
+function Event21019_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21019) == TRUE then
+        return
+    end
+    
+end
+
+function Event21020_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21020) == TRUE then
+        return
+    end
+    
+end
+
+function Event21021_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21021) == TRUE then
+        return
+    end
+    
+end
+
+function Event21022_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21022) == TRUE then
+        return
+    end
+    
+end
+
+function Event21023_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21023) == TRUE then
+        return
+    end
+    
+end
+
+function Event21024_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21024) == TRUE then
+        return
+    end
+    
+end
+
+function Event21025_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21025) == TRUE then
+        return
+    end
+    
+end
+
+function Event21026_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21026) == TRUE then
+        return
+    end
+    
+end
+
+function Event21027_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21027) == TRUE then
+        return
+    end
+    
+end
+
+function Event21028_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21028) == TRUE then
+        return
+    end
+    
+end
+
+function Event21029_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21029) == TRUE then
+        return
+    end
+    
+end
+
+function Event21030_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21030) == TRUE then
+        return
+    end
+    
+end
+
+function Event21031_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21031) == TRUE then
+        return
+    end
+    
+end
+
+function Event21032_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21032) == TRUE then
+        return
+    end
+    
+end
+
+function Event21033_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21033) == TRUE then
+        return
+    end
+    
+end
+
+function Event21034_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21034) == TRUE then
+        return
+    end
+    
+end
+
+function Event21035_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21035) == TRUE then
+        return
+    end
+    
+end
+
+function Event21036_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21036) == TRUE then
+        return
+    end
+    
+end
+
+function Event21037_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21037) == TRUE then
+        return
+    end
+    
+end
+
+function Event21038_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21038) == TRUE then
+        return
+    end
+    
+end
+
+function Event21039_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21039) == TRUE then
+        return
+    end
+    
+end
+
+function Event21040_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21040) == TRUE then
+        return
+    end
+    
+end
+
+function Event21041_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21041) == TRUE then
+        return
+    end
+    
+end
+
+function Event21042_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21042) == TRUE then
+        return
+    end
+    
+end
+
+function Event21043_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21043) == TRUE then
+        return
+    end
+    
+end
+
+function Event21044_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21044) == TRUE then
+        return
+    end
+    
+end
+
+function Event21045_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21045) == TRUE then
+        return
+    end
+    
+end
+
+function Event21046_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21046) == TRUE then
+        return
+    end
+    
+end
+
+function Event21047_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21047) == TRUE then
+        return
+    end
+    
+end
+
+function Event21048_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21048) == TRUE then
+        return
+    end
+    
+end
+
+function Event21049_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21049) == TRUE then
+        return
+    end
+    
+end
+
+function Event21050_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21050) == TRUE then
+        return
+    end
+    
+end
+
+function Event21051_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21051) == TRUE then
+        return
+    end
+    
+end
+
+function Event21052_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21052) == TRUE then
+        return
+    end
+    
+end
+
+function Event21053_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21053) == TRUE then
+        return
+    end
+    
+end
+
+function Event21054_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21054) == TRUE then
+        return
+    end
+    
+end
+
+function Event21055_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21055) == TRUE then
+        return
+    end
+    
+end
+
+function Event21056_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21056) == TRUE then
+        return
+    end
+    
+end
+
+function Event21057_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21057) == TRUE then
+        return
+    end
+    
+end
+
+function Event21058_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21058) == TRUE then
+        return
+    end
+    
+end
+
+function Event21059_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21059) == TRUE then
+        return
+    end
+    
+end
+
+function Event21060_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21060) == TRUE then
+        return
+    end
+    
+end
+
+function Event21061_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21061) == TRUE then
+        return
+    end
+    
+end
+
+function Event21062_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21062) == TRUE then
+        return
+    end
+    
+end
+
+function Event21063_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21063) == TRUE then
+        return
+    end
+    
+end
+
+function Event21064_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21064) == TRUE then
+        return
+    end
+    
+end
+
+function Event21065_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21065) == TRUE then
+        return
+    end
+    
+end
+
+function Event21066_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21066) == TRUE then
+        return
+    end
+    
+end
+
+function Event21067_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21067) == TRUE then
+        return
+    end
+    
+end
+
+function Event21068_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21068) == TRUE then
+        return
+    end
+    
+end
+
+function Event21069_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21069) == TRUE then
+        return
+    end
+    
+end
+
+function Event21070_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21070) == TRUE then
+        return
+    end
+    
+end
+
+function Event21071_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21071) == TRUE then
+        return
+    end
+    
+end
+
+function Event21072_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21072) == TRUE then
+        return
+    end
+    
+end
+
+function Event21073_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21073) == TRUE then
+        return
+    end
+    
+end
+
+function Event21074_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21074) == TRUE then
+        return
+    end
+    
+end
+
+function Event21075_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21075) == TRUE then
+        return
+    end
+    
+end
+
+function Event21076_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21076) == TRUE then
+        return
+    end
+    
+end
+
+function Event21077_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21077) == TRUE then
+        return
+    end
+    
+end
+
+function Event21078_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21078) == TRUE then
+        return
+    end
+    
+end
+
+function Event21079_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21079) == TRUE then
+        return
+    end
+    
+end
+
+function Event21080_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21080) == TRUE then
+        return
+    end
+    
+end
+
+function Event21081_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21081) == TRUE then
+        return
+    end
+    
+end
+
+function Event21082_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21082) == TRUE then
+        return
+    end
+    
+end
+
+function Event21083_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21083) == TRUE then
+        return
+    end
+    
+end
+
+function Event21084_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21084) == TRUE then
+        return
+    end
+    
+end
+
+function Event21085_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21085) == TRUE then
+        return
+    end
+    
+end
+
+function Event21086_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21086) == TRUE then
+        return
+    end
+    
+end
+
+function Event21087_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21087) == TRUE then
+        return
+    end
+    
+end
+
+function Event21088_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21088) == TRUE then
+        return
+    end
+    
+end
+
+function Event21089_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21089) == TRUE then
+        return
+    end
+    
+end
+
+function Event21090_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21090) == TRUE then
+        return
+    end
+    
+end
+
+function Event21091_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21091) == TRUE then
+        return
+    end
+    
+end
+
+function Event21092_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21092) == TRUE then
+        return
+    end
+    
+end
+
+function Event21093_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21093) == TRUE then
+        return
+    end
+    
+end
+
+function Event21094_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21094) == TRUE then
+        return
+    end
+    
+end
+
+function Event21095_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21095) == TRUE then
+        return
+    end
+    
+end
+
+function Event21096_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21096) == TRUE then
+        return
+    end
+    
+end
+
+function Event21097_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21097) == TRUE then
+        return
+    end
+    
+end
+
+function Event21098_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21098) == TRUE then
+        return
+    end
+    
+end
+
+function Event21099_onUpdate()
+    SetThrowFlag(STATE_NORMAL)
+    if EventCommonFunction(21099) == TRUE then
+        return
+    end
+    
+end
+
+function ExecTalkTransitionIndividual(anim_id, talk_ref_Id)
+    local IsDoneTalkPlayOneshot = GetVariable("IsDoneTalkPlayOneshot")
+    if (anim_id == ANIME_ID_IDLE_DEFAULT or anim_id == 20000 or anim_id == 20010) and talk_ref_Id == TALK_BEH_IDENTIFIER__TALK_PLAY_00 and IsDoneTalkPlayOneshot == false then
+        SetVariable("IsDoneTalkPlayOneshot", true)
+        Fire("W_Event20000")
+        return TRUE
+    elseif (anim_id == ANIME_ID_IDLE_DEFAULT or anim_id == 20000 or anim_id == 20010) and talk_ref_Id == TALK_BEH_IDENTIFIER__TALK_PLAY_01 then
+        Fire("W_Event20004")
+        return TRUE
+    elseif (anim_id == ANIME_ID_IDLE_DEFAULT or anim_id == 20000 or anim_id == 20010) and talk_ref_Id == TALK_BEH_IDENTIFIER__TALK_PLAY_02 then
+        Fire("W_Event20003")
+        return TRUE
+    elseif (anim_id == 21004 or anim_id == 20004 or anim_id == 20003 or anim_id == 20005 or anim_id == 20006) and talk_ref_Id == TALK_BEH_IDENTIFIER__TALK_PLAY_03 and IsDoneTalkPlayOneshot == false then
+        SetVariable("IsDoneTalkPlayOneshot", true)
+        Fire("W_Event20005")
+        return TRUE
+    elseif (anim_id == 21004 or anim_id == 20004 or anim_id == 20003 or anim_id == 20005 or anim_id == 20006) and talk_ref_Id == TALK_BEH_IDENTIFIER__TALK_PLAY_04 and IsDoneTalkPlayOneshot == false then
+        SetVariable("IsDoneTalkPlayOneshot", true)
+        Fire("W_Event20006")
+        return TRUE
+    elseif (anim_id == ANIME_ID_IDLE_DEFAULT or anim_id == 20000 or anim_id == 20010) and talk_ref_Id == TALK_BEH_IDENTIFIER__TALK_PLAY_05 then
+        Fire("W_Event21004")
+        return TRUE
+    end
+    return FALSE
+    
+end
+
+global = {}
+
+function dummy()
+    
+end
+
+global.__index = function (table, element)
+    return dummy
+    
+end
+
+setmetatable(_G, global)
+
