@@ -10,7 +10,7 @@ Unlike other fromsoft titles, Sekiro's player hks is split into 4 files.
 - `c0000_cmsg.hks` (Custom Manual Selector Generator) - used for assigning havok behavior to fired hks events.
 
 NPC's
-- NPC's depend on `c9997.hks`.
+- NPC's depend on `c9997.hks`, it is a general script which all npc's share.
 - Hks assigned to their entity is used for entering idle after grabs, and sometimes stores dialogue related code.
 
 ## Requirements
