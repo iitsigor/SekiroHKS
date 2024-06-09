@@ -10,3 +10,9 @@ Unlike other fromsoft titles, Sekiro's player hks is split into 4 files.
 - c0000_define.hks - stores defined values, as well as some other niche things
 - c0000_transition.hks - generally used for firing hks events during a set state (can be "Style", HKB (Havok Behavior), Speffect, or other)
 - c0000_cmsg.hks (Custom Manual Selector Generator) - used for assigning havok behavior to fired hks events
+
+Credits:
+- Vawser - Creator of Elden Ring documentation, (hks part in particular) used as reference.
+- Meowmaritus - Publisher of the Commands and Variables dump, used for cross checking Vawser's list.
+- Me (Igor) - Creator of the Sekiro adaptation of the list.
+- LurkyDismal - Creator of the script for assigning variables from list to hks.
