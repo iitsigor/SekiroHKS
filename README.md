@@ -5,19 +5,19 @@ This repo adds variables to the "env(" and "act(" values in order to provide mor
 ## Information
 PLAYER
 Unlike other fromsoft titles, Sekiro's player hks is split into 4 files.
-- c0000.hks - most of the code here uses env( and act(. Stores essential commands which get used across other hks files as well.
-- c0000_define.hks - stores defined values, debug print functions, as well as a couple other things.
-- c0000_transition.hks - generally used for firing hks events during a set state or active variable (can be "Style", HKB (Havok Behavior), Speffect, or other).
-- c0000_cmsg.hks (Custom Manual Selector Generator) - used for assigning havok behavior to fired hks events.
+- `c0000.hks` - most of the code here uses env( and act(. Stores essential commands which get used across other hks files as well.
+- `c0000_define.hks` - stores defined values, debug print functions, as well as a couple other things.
+- `c0000_transition.hks` - generally used for firing hks events during a set state or active variable (can be "Style", HKB (Havok Behavior), Speffect, or other).
+- `c0000_cmsg.hks` (Custom Manual Selector Generator) - used for assigning havok behavior to fired hks events.
 
 NPC's
-- NPC's depend on c9997.hks.
+- NPC's depend on `c9997.hks`.
 - Hks assigned to their entity is used for entering idle after grabs, and sometimes stores dialogue related code.
 
 ## Requirements
 
 - any form of c0000 files from this repo need to include c0000_define.hks to work, as that is where the variables are stored.
-- in order to use any of the npc .hks files (e.g: c7110.hks), you need to include c9997.hks from this repo as well, as that is where the variables are stored.
+- in order to use any of the npc .hks files (e.g: `c7110.hks`), you need to include `c9997.hks` from this repo as well, as that is where the variables are stored.
 
 ## Credits:
 
